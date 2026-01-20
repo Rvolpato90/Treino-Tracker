@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0f172a">
+  <title>Treino Tracker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #0f172a; color: #fff; min-height: 100vh; overflow-x: hidden; }
+    .container { max-width: 480px; margin: 0 auto; padding: 16px; padding-bottom: 100px; }
+
+    /* Cards */
+    .card { background: #1e293b; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .card-gradient { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .card-pink { background: linear-gradient(135deg, #f43f5e, #ec4899); }
+    .card-blue { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .card-amber { background: linear-gradient(135deg, #f59e0b, #ea580c); }
+    .card-green { background: linear-gradient(135deg, #10b981, #14b8a6); }
+    .card-purple { background: linear-gradient(135deg, #a855f7, #8b5cf6); }
+
+    /* Typography */
+    .text-xs { font-size: 12px; }
+    .text-sm { font-size: 14px; }
+    .text-lg { font-size: 18px; }
+    .text-xl { font-size: 20px; }
+    .text-2xl { font-size: 24px; }
+    .text-3xl { font-size: 30px; }
+    .font-bold { font-weight: 700; }
+    .font-medium { font-weight: 500; }
+    .text-white { color: #fff; }
+    .text-muted { color: rgba(255,255,255,0.7); }
+    .text-slate { color: #94a3b8; }
+    .text-indigo { color: #818cf8; }
+    .text-green { color: #4ade80; }
+    .text-amber { color: #fbbf24; }
+    .text-red { color: #f87171; }
+
+    /* Flex */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+
+    /* Grid */
+    .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+
+    /* Spacing */
+    .mb-1 { margin-bottom: 4px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .mb-4 { margin-bottom: 16px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mt-4 { margin-top: 16px; }
+    .p-2 { padding: 8px; }
+    .px-3 { padding-left: 12px; padding-right: 12px; }
+    .py-1 { padding-top: 4px; padding-bottom: 4px; }
+    .py-2 { padding-top: 8px; padding-bottom: 8px; }
+
+    /* Buttons */
+    .btn { border: none; border-radius: 12px; padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-green { background: #22c55e; color: white; }
+    .btn-amber { background: #f59e0b; color: white; }
+    .btn-indigo { background: #6366f1; color: white; }
+    .btn-slate { background: #334155; color: white; }
+    .btn-full { width: 100%; padding: 16px; font-size: 16px; }
+
+    /* Inputs */
+    input, textarea, select { background: #334155; border: 1px solid #475569; border-radius: 12px; padding: 12px 16px; color: white; font-size: 14px; width: 100%; outline: none; }
+    input:focus, textarea:focus { border-color: #6366f1; }
+    select { cursor: pointer; }
+
+    /* Checkbox */
+    .checkbox { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+    .checkbox.checked { background: #22c55e; border-color: #22c55e; }
+
+    /* Exercise */
+    .exercise { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: all 0.2s; }
+    .exercise.done { background: rgba(34, 197, 94, 0.1); border-color: #22c55e; }
+    .exercise-name { font-weight: 500; }
+    .exercise-name.done { color: #4ade80; text-decoration: line-through; }
+    .tag { background: #334155; padding: 2px 8px; border-radius: 9999px; font-size: 11px; color: #94a3b8; }
+
+    /* Progress bar */
+    .progress-bg { background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .progress-fill.indigo { background: #818cf8; }
+    .progress-fill.white { background: white; }
+    .progress-fill.red { background: #ef4444; }
+
+    /* Week calendar */
+    .day-cell { background: #1e293b; border-radius: 12px; padding: 8px 4px; text-align: center; }
+    .day-cell.today { background: #6366f1; box-shadow: 0 0 0 2px #818cf8; }
+    .day-label { font-size: 11px; margin-bottom: 4px; }
+    .day-icon { font-size: 18px; }
+
+    /* Nav */
+    .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid #334155; display: flex; padding-bottom: env(safe-area-inset-bottom); }
+    .nav-item { flex: 1; padding: 12px 0; display: flex; flex-direction: column; align-items: center; color: #64748b; cursor: pointer; }
+    .nav-item.active { color: #818cf8; }
+    .nav-icon { font-size: 20px; margin-bottom: 4px; }
+    .nav-label { font-size: 11px; }
+
+    /* Workout list item */
+    .workout-item { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .workout-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+
+    /* Timer */
+    .timer-btns { display: flex; gap: 4px; }
+    .timer-btn { padding: 4px 8px; border-radius: 6px; font-size: 12px; border: none; cursor: pointer; color: white; }
+    .timer-btn.active { background: #6366f1; }
+    .timer-btn:not(.active) { background: #334155; }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fadeIn 0.2s ease; }
+  </style>
+</head>
+<body>
+  <div class="container" id="app"></div>
+  <nav class="nav" id="nav"></nav>
+
+  <script>
+    // Data
+    const STORAGE_KEY = 'treino-v4';
+
+    let state = {
+      view: 'home',
+      cycle: {
+        name: "Retorno à Musculação",
+        duration: "4 semanas",
+        mainGoal: "Emagrecimento",
+        notes: "Cargas moderadas nas primeiras semanas. Evitar corrida e saltos.",
+        schedule: { mon: "A", tue: "B", wed: "rest", thu: "C", fri: "D", sat: "E", sun: "rest" }
+      },
+      workouts: {
+        A: { name: "Inferior (Posterior)", icon: "🦵", color: "pink", rest: 60, notes: "Foco em glúteos e isquiotibiais", exercises: [
+          { id: "a1", name: "Abdução de quadril", sets: "3x15-20", cat: "Ativação", load: "" },
+          { id: "a2", name: "Coice na polia baixa", sets: "3x15-20", cat: "Ativação", load: "" },
+          { id: "a3", name: "Mesa flexora", sets: "3x12-15", cat: "Principal", load: "" },
+          { id: "a4", name: "Stiff com halteres", sets: "3x10-12", cat: "Principal", load: "" },
+          { id: "a5", name: "Agachamento sumô Smith", sets: "3x12-15", cat: "Principal", load: "" },
+          { id: "a6", name: "Hip thrust", sets: "3x12-15", cat: "Principal", load: "" },
+          { id: "a7", name: "Panturrilha em pé", sets: "3x15-20", cat: "Acessório", load: "" },
+          { id: "a8", name: "Aeróbico", sets: "20-25 min", cat: "Cardio", load: "" }
+        ]},
+        B: { name: "Superior (Empurrar)", icon: "💪", color: "blue", rest: 60, notes: "Peito + Ombros + Tríceps + Core", exercises: [
+          { id: "b1", name: "Supino reto halteres", sets: "3x10-12", cat: "Peito", load: "" },
+          { id: "b2", name: "Supino inclinado máquina", sets: "3x12-15", cat: "Peito", load: "" },
+          { id: "b3", name: "Desenvolvimento halteres", sets: "3x10-12", cat: "Ombros", load: "" },
+          { id: "b4", name: "Elevação lateral", sets: "3x12-15", cat: "Ombros", load: "" },
+          { id: "b5", name: "Tríceps polia", sets: "3x12-15", cat: "Tríceps", load: "" },
+          { id: "b6", name: "Tríceps francês", sets: "3x12-15", cat: "Tríceps", load: "" },
+          { id: "b7", name: "Prancha isométrica", sets: "3x40-60s", cat: "Core", load: "" },
+          { id: "b8", name: "Abdominal polia", sets: "3x15-20", cat: "Core", load: "" },
+          { id: "b9", name: "Russian twist", sets: "3x20", cat: "Core", load: "" },
+          { id: "b10", name: "Aeróbico", sets: "15 min", cat: "Cardio", load: "" }
+        ]},
+        C: { name: "Inferior (Anterior)", icon: "🦿", color: "amber", rest: 60, notes: "⚠️ CUIDADO COM O JOELHO", exercises: [
+          { id: "c1", name: "Extensora", sets: "3x15-20", cat: "Ativação", load: "", warn: true },
+          { id: "c2", name: "Leg press 45°", sets: "3x12-15", cat: "Principal", load: "", warn: true },
+          { id: "c3", name: "Cadeira adutora", sets: "3x15-20", cat: "Estabilização", load: "" },
+          { id: "c4", name: "Cadeira abdutora", sets: "3x15-20", cat: "Glúteo médio", load: "" },
+          { id: "c5", name: "Afundo estático Smith", sets: "3x10-12", cat: "Principal", load: "", warn: true },
+          { id: "c6", name: "Panturrilha sentado", sets: "3x15-20", cat: "Acessório", load: "" },
+          { id: "c7", name: "Aeróbico", sets: "25 min", cat: "Cardio", load: "" }
+        ]},
+        D: { name: "Superior (Puxar)", icon: "🏋️", color: "green", rest: 60, notes: "Costas + Bíceps + Core", exercises: [
+          { id: "d1", name: "Pulldown frente", sets: "3x10-12", cat: "Costas", load: "" },
+          { id: "d2", name: "Remada sentada", sets: "3x12-15", cat: "Costas", load: "" },
+          { id: "d3", name: "Remada alta halteres", sets: "3x12-15", cat: "Trapézio", load: "" },
+          { id: "d4", name: "Rosca direta barra W", sets: "3x10-12", cat: "Bíceps", load: "" },
+          { id: "d5", name: "Rosca martelo", sets: "3x12-15", cat: "Bíceps", load: "" },
+          { id: "d6", name: "Face pull", sets: "3x15-20", cat: "Postura", load: "" },
+          { id: "d7", name: "Prancha lateral", sets: "3x30-45s", cat: "Core", load: "" },
+          { id: "d8", name: "Dead bug", sets: "3x12-15", cat: "Core", load: "" },
+          { id: "d9", name: "Elevação de pernas", sets: "3x12-15", cat: "Core", load: "" },
+          { id: "d10", name: "Aeróbico", sets: "15 min", cat: "Cardio", load: "" }
+        ]},
+        E: { name: "Core + Aeróbico", icon: "🔥", color: "purple", rest: 45, notes: "TREINO OPCIONAL", exercises: [
+          { id: "e1", name: "Prancha isométrica", sets: "3x45-60s", cat: "Core", load: "" },
+          { id: "e2", name: "Prancha lateral elevação", sets: "3x12-15", cat: "Core", load: "" },
+          { id: "e3", name: "Abdominal infra polia", sets: "3x15-20", cat: "Core", load: "" },
+          { id: "e4", name: "Abdominal supra", sets: "3x15-20", cat: "Core", load: "" },
+          { id: "e5", name: "Oblíquos halteres", sets: "3x15", cat: "Core", load: "" },
+          { id: "e6", name: "Mountain climbers", sets: "3x20", cat: "Core", load: "" },
+          { id: "e7", name: "Bird dog", sets: "3x12", cat: "Core", load: "" },
+          { id: "e8", name: "Aeróbico longo", sets: "30-35 min", cat: "Cardio", load: "" }
+        ]}
+      },
+      completed: {},
+      history: [],
+      selected: null,
+      editMode: null,
+      editCycle: false,
+      timer: { sec: 60, running: false, total: 60 }
+    };
+
+    // Storage
+    function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    function load() {
+      try {
+        const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (s) {
+          if (s.cycle) state.cycle = s.cycle;
+          if (s.workouts) state.workouts = s.workouts;
+          if (s.completed) state.completed = s.completed;
+          if (s.history) state.history = s.history;
+        }
+      } catch(e) {}
+    }
+
+    // Helpers
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const dayLabels = { mon: 'Seg', tue: 'Ter', wed: 'Qua', thu: 'Qui', fri: 'Sex', sat: 'Sáb', sun: 'Dom' };
+    const dayFull = { mon: 'Segunda', tue: 'Terça', wed: 'Quarta', thu: 'Quinta', fri: 'Sexta', sat: 'Sábado', sun: 'Domingo' };
+    const colors = { pink: 'card-pink', blue: 'card-blue', amber: 'card-amber', green: 'card-green', purple: 'card-purple' };
+
+    const today = new Date();
+    const todayKey = today.toISOString().split('T')[0];
+    const todayDay = days[today.getDay()];
+
+    function getProgress(wk) {
+      const w = state.workouts[wk];
+      if (!w) return 0;
+      const done = w.exercises.filter(e => state.completed[`${todayKey}-${wk}-${e.id}`]).length;
+      return Math.round((done / w.exercises.length) * 100);
+    }
+
+    function formatDate(d) {
+      return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+
+    // Timer
+    let timerInterval = null;
+    function startTimer() {
+      state.timer.running = true;
+      timerInterval = setInterval(() => {
+        if (state.timer.sec > 0) {
+          state.timer.sec--;
+          render();
+        } else {
+          stopTimer();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        }
+      }, 1000);
+      render();
+    }
+    function stopTimer() {
+      state.timer.running = false;
+      clearInterval(timerInterval);
+      render();
+    }
+    function resetTimer() {
+      state.timer.sec = state.timer.total;
+      stopTimer();
+    }
+    function setTimerTotal(t) {
+      state.timer.total = t;
+      state.timer.sec = t;
+      state.timer.running = false;
+      clearInterval(timerInterval);
+      render();
+    }
+
+    // Render
+    function render() {
+      const app = document.getElementById('app');
+      const nav = document.getElementById('nav');
+
+      // Nav
+      if (!state.editMode && !state.editCycle && state.view !== 'workout') {
+        nav.innerHTML = `
+          <div class="nav-item ${state.view === 'home' ? 'active' : ''}" onclick="state.view='home';render()">
+            <span class="nav-icon">🏠</span><span class="nav-label">Início</span>
+          </div>
+          <div class="nav-item ${state.view === 'schedule' ? 'active' : ''}" onclick="state.view='schedule';render()">
+            <span class="nav-icon">📅</span><span class="nav-label">Semana</span>
+          </div>
+          <div class="nav-item ${state.view === 'history' ? 'active' : ''}" onclick="state.view='history';render()">
+            <span class="nav-icon">📊</span><span class="nav-label">Histórico</span>
+          </div>
+        `;
+        nav.classList.remove('hidden');
+      } else {
+        nav.classList.add('hidden');
+      }
+
+      // Views
+      if (state.editCycle) return renderEditCycle(app);
+      if (state.editMode) return renderEditWorkout(app);
+      if (state.view === 'home') return renderHome(app);
+      if (state.view === 'workout') return renderWorkout(app);
+      if (state.view === 'schedule') return renderSchedule(app);
+      if (state.view === 'history') return renderHistory(app);
+    }
+
+    function renderHome(app) {
+      const todayWk = state.cycle.schedule[todayDay];
+      const todayWorkout = todayWk !== 'rest' ? state.workouts[todayWk] : null;
+
+      let weekHtml = '';
+      ['mon','tue','wed','thu','fri','sat','sun'].forEach(d => {
+        const wk = state.cycle.schedule[d];
+        const w = wk !== 'rest' ? state.workouts[wk] : null;
+        const isToday = d === todayDay;
+        weekHtml += `<div class="day-cell ${isToday ? 'today' : ''}">
+          <div class="day-label ${isToday ? 'text-white' : 'text-slate'}">${dayLabels[d]}</div>
+          <div class="day-icon">${w ? w.icon : '—'}</div>
+        </div>`;
+      });
+
+      let workoutsHtml = '';
+      Object.entries(state.workouts).forEach(([k, w]) => {
+        workoutsHtml += `<div class="workout-item" onclick="state.selected='${k}';state.view='workout';render()">
+          <div class="workout-icon ${colors[w.color]}">${w.icon}</div>
+          <div style="flex:1">
+            <div class="text-slate text-xs">Treino ${k}</div>
+            <div class="font-medium">${w.name}</div>
+            <div class="text-slate text-xs">${w.exercises.length} exercícios</div>
+          </div>
+          <span class="text-slate">→</span>
+        </div>`;
+      });
+
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="card card-gradient mb-4">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <div class="text-muted text-sm">Ciclo Atual</div>
+                <div class="text-xl font-bold">${state.cycle.name}</div>
+              </div>
+              <button class="btn btn-slate text-sm" onclick="state.editCycle=true;render()" style="padding:8px">✏️</button>
+            </div>
+            <div class="flex gap-3 text-muted text-sm">
+              <span>🎯 ${state.cycle.mainGoal}</span>
+              <span>📅 ${state.cycle.duration}</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="text-slate text-sm mb-2">${dayFull[todayDay]} - ${today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}</div>
+            ${todayWorkout ? `
+              <div class="card ${colors[todayWorkout.color]}" onclick="state.selected='${todayWk}';state.view='workout';render()" style="cursor:pointer">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="text-3xl">${todayWorkout.icon}</span>
+                  <div>
+                    <div class="text-muted text-sm">Treino ${todayWk}</div>
+                    <div class="font-bold text-lg">${todayWorkout.name}</div>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-muted text-sm">${todayWorkout.exercises.length} exercícios</span>
+                  ${getProgress(todayWk) > 0 ? `<span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:999px" class="text-sm">${getProgress(todayWk)}%</span>` : ''}
+                </div>
+              </div>
+            ` : `
+              <div class="card" style="text-align:center">
+                <div class="text-3xl mb-2">😴</div>
+                <div class="font-medium">Dia de Descanso</div>
+                <div class="text-slate text-sm mt-1">${todayDay === 'wed' ? 'Descanso ativo' : 'Recuperação'}</div>
+              </div>
+            `}
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-slate text-sm">Semana</span>
+              <span class="text-indigo text-sm" onclick="state.view='schedule';render()" style="cursor:pointer">Editar →</span>
+            </div>
+            <div class="grid-7">${weekHtml}</div>
+          </div>
+
+          <div>
+            <div class="text-slate text-sm mb-2">Todos os Treinos</div>
+            ${workoutsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWorkout(app) {
+      const w = state.workouts[state.selected];
+      const prog = getProgress(state.selected);
+      const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+      const pct = (state.timer.sec / state.timer.total) * 100;
+
+      let exHtml = '';
+      w.exercises.forEach(ex => {
+        const done = state.completed[`${todayKey}-${state.selected}-${ex.id}`];
+        exHtml += `
+          <div class="exercise ${done ? 'done' : ''}">
+            <div class="flex items-start gap-3">
+              <div class="checkbox ${done ? 'checked' : ''}" onclick="toggleEx('${state.selected}','${ex.id}')">
+                ${done ? '✓' : ''}
+              </div>
+              <div style="flex:1">
+                <div class="exercise-name ${done ? 'done' : ''}">${ex.name}${ex.warn ? ' ⚠️' : ''}</div>
+                <div class="flex gap-2 mt-1 items-center">
+                  <span class="text-indigo text-sm font-medium">${ex.sets}</span>
+                  <span class="tag">${ex.cat}</span>
+                </div>
+                <div class="text-slate text-xs mt-2" onclick="toggleLoad('${ex.id}')" style="cursor:pointer">
+                  📝 ${ex.load || 'Anotar carga'}
+                </div>
+                <div id="load-${ex.id}" class="hidden mt-2">
+                  <input type="text" placeholder="Ex: 20kg" value="${ex.load || ''}" onchange="updateLoad('${state.selected}','${ex.id}',this.value)">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="card ${colors[w.color]} mb-4">
+            <div class="text-muted mb-3" onclick="state.view='home';state.selected=null;stopTimer();render()" style="cursor:pointer">← Voltar</div>
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">${w.icon}</span>
+              <div>
+                <div class="text-muted text-sm">Treino ${state.selected}</div>
+                <div class="font-bold text-xl">${w.name}</div>
+              </div>
+            </div>
+            ${w.notes ? `<div class="text-muted text-sm mt-3">${w.notes}</div>` : ''}
+            <div class="mt-4">
+              <div class="flex justify-between text-muted text-sm mb-1">
+                <span>Progresso</span>
+                <span>${prog}%</span>
+              </div>
+              <div class="progress-bg">
+                <div class="progress-fill white" style="width:${prog}%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-slate text-sm">Descanso</span>
+              <div class="timer-btns">
+                <button class="timer-btn ${state.timer.total === 45 ? 'active' : ''}" onclick="setTimerTotal(45)">45s</button>
+                <button class="timer-btn ${state.timer.total === 60 ? 'active' : ''}" onclick="setTimerTotal(60)">60s</button>
+                <button class="timer-btn ${state.timer.total === 90 ? 'active' : ''}" onclick="setTimerTotal(90)">90s</button>
+              </div>
+            </div>
+            <div class="progress-bg mb-3">
+              <div class="progress-fill ${state.timer.sec <= 10 ? 'red' : 'indigo'}" style="width:${pct}%"></div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-3xl font-bold ${state.timer.sec <= 10 ? 'text-red' : ''}">${fmt(state.timer.sec)}</span>
+              <div class="flex gap-2">
+                <button class="btn ${state.timer.running ? 'btn-amber' : 'btn-green'}" onclick="${state.timer.running ? 'stopTimer()' : 'startTimer()'}">${state.timer.running ? 'Pausar' : 'Iniciar'}</button>
+                <button class="btn btn-slate" onclick="resetTimer()">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mb-3">
+            <span class="font-medium">Exercícios</span>
+            <span class="text-indigo text-sm" onclick="state.editMode='${state.selected}';render()" style="cursor:pointer">Editar</span>
+          </div>
+          ${exHtml}
+
+          <button class="btn btn-green btn-full mt-4" onclick="finishWorkout()">Finalizar Treino (${prog}%)</button>
+        </div>
+      `;
+    }
+
+    function renderSchedule(app) {
+      let html = '';
+      ['mon','tue','wed','thu','fri','sat','sun'].forEach(d => {
+        let opts = '<option value="rest">Descanso</option>';
+        Object.keys(state.workouts).forEach(k => {
+          opts += `<option value="${k}" ${state.cycle.schedule[d] === k ? 'selected' : ''}>Treino ${k}</option>`;
+        });
+        html += `<div class="card flex justify-between items-center">
+          <span class="font-medium">${dayFull[d]}</span>
+          <select onchange="state.cycle.schedule['${d}']=this.value;save();render()">${opts}</select>
+        </div>`;
+      });
+
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-xl font-bold">Programação</span>
+            <span class="text-slate" onclick="state.view='home';render()" style="cursor:pointer">✕</span>
+          </div>
+          ${html}
+        </div>
+      `;
+    }
+
+    function renderHistory(app) {
+      let html = '';
+      if (state.history.length === 0) {
+        html = `<div class="card" style="text-align:center;padding:40px">
+          <div class="text-3xl mb-3">📊</div>
+          <div class="text-slate">Nenhum treino ainda</div>
+        </div>`;
+      } else {
+        state.history.forEach(h => {
+          const color = h.progress >= 80 ? 'text-green' : h.progress >= 50 ? 'text-amber' : 'text-red';
+          html += `<div class="card flex justify-between items-center">
+            <div>
+              <div class="font-medium">Treino ${h.workout}</div>
+              <div class="text-slate text-sm">${h.name}</div>
+              <div class="text-slate text-xs mt-1">${formatDate(h.date)}</div>
+            </div>
+            <span class="text-2xl font-bold ${color}">${h.progress}%</span>
+          </div>`;
+        });
+      }
+
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-xl font-bold">Histórico</span>
+            <span class="text-slate" onclick="state.view='home';render()" style="cursor:pointer">✕</span>
+          </div>
+          ${html}
+        </div>
+      `;
+    }
+
+    function renderEditCycle(app) {
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-xl font-bold">Editar Ciclo</span>
+            <span class="text-slate" onclick="state.editCycle=false;render()" style="cursor:pointer">✕</span>
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Nome</label>
+            <input type="text" value="${state.cycle.name}" onchange="state.cycle.name=this.value" class="mt-1">
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Objetivo</label>
+            <input type="text" value="${state.cycle.mainGoal}" onchange="state.cycle.mainGoal=this.value" class="mt-1">
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Duração</label>
+            <input type="text" value="${state.cycle.duration}" onchange="state.cycle.duration=this.value" class="mt-1">
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Observações</label>
+            <textarea onchange="state.cycle.notes=this.value" class="mt-1" style="height:80px">${state.cycle.notes}</textarea>
+          </div>
+          <button class="btn btn-indigo btn-full" onclick="save();state.editCycle=false;render()">Salvar</button>
+        </div>
+      `;
+    }
+
+    function renderEditWorkout(app) {
+      const w = state.workouts[state.editMode];
+      let exHtml = '';
+      w.exercises.forEach((ex, i) => {
+        exHtml += `<div class="card mb-2">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-slate text-sm">#${i+1}</span>
+            <span class="text-red" onclick="deleteEx('${ex.id}')" style="cursor:pointer">🗑</span>
+          </div>
+          <input type="text" value="${ex.name}" onchange="updateExField('${ex.id}','name',this.value)" class="mb-2">
+          <div class="flex gap-2">
+            <input type="text" value="${ex.sets}" onchange="updateExField('${ex.id}','sets',this.value)" placeholder="Séries">
+            <input type="text" value="${ex.cat}" onchange="updateExField('${ex.id}','cat',this.value)" placeholder="Categoria">
+          </div>
+        </div>`;
+      });
+
+      app.innerHTML = `
+        <div class="fade-in">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-xl font-bold">Editar Treino ${state.editMode}</span>
+            <span class="text-slate" onclick="state.editMode=null;render()" style="cursor:pointer">✕</span>
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Nome</label>
+            <input type="text" value="${w.name}" onchange="state.workouts['${state.editMode}'].name=this.value" class="mt-1">
+          </div>
+          <div class="mb-3">
+            <label class="text-slate text-sm">Observações</label>
+            <input type="text" value="${w.notes || ''}" onchange="state.workouts['${state.editMode}'].notes=this.value" class="mt-1">
+          </div>
+          <div class="font-medium mb-2 mt-4">Exercícios</div>
+          ${exHtml}
+          <div class="card mb-4" style="border:2px dashed #475569;text-align:center;cursor:pointer" onclick="addEx()">+ Adicionar</div>
+          <button class="btn btn-indigo btn-full" onclick="save();state.editMode=null;render()">Concluir</button>
+        </div>
+      `;
+    }
+
+    // Actions
+    function toggleEx(wk, exId) {
+      const key = `${todayKey}-${wk}-${exId}`;
+      state.completed[key] = !state.completed[key];
+      save();
+      render();
+    }
+
+    function toggleLoad(exId) {
+      const el = document.getElementById(`load-${exId}`);
+      el.classList.toggle('hidden');
+    }
+
+    function updateLoad(wk, exId, val) {
+      const ex = state.workouts[wk].exercises.find(e => e.id === exId);
+      if (ex) ex.load = val;
+      save();
+    }
+
+    function finishWorkout() {
+      const wk = state.selected;
+      state.history.unshift({
+        date: todayKey,
+        workout: wk,
+        name: state.workouts[wk].name,
+        progress: getProgress(wk)
+      });
+      if (state.history.length > 100) state.history.pop();
+      save();
+      stopTimer();
+      state.view = 'home';
+      state.selected = null;
+      render();
+    }
+
+    function addEx() {
+      const wk = state.editMode;
+      const newId = `${wk.toLowerCase()}${Date.now()}`;
+      state.workouts[wk].exercises.push({ id: newId, name: 'Novo exercício', sets: '3x12', cat: 'Novo', load: '' });
+      render();
+    }
+
+    function deleteEx(exId) {
+      const wk = state.editMode;
+      state.workouts[wk].exercises = state.workouts[wk].exercises.filter(e => e.id !== exId);
+      render();
+    }
+
+    function updateExField(exId, field, val) {
+      const wk = state.editMode;
+      const ex = state.workouts[wk].exercises.find(e => e.id === exId);
+      if (ex) ex[field] = val;
+    }
+
+    // Init
+    load();
+    render();
+  </script>
+</body>
+</html>
