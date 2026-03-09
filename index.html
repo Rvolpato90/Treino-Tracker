@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0f172a">
-  <title>Treino Tracker</title>
+  <title>Treino Tracker - Ciclo 2</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: #0f172a; color: #fff; min-height: 100vh; overflow-x: hidden; }
@@ -131,70 +131,73 @@
 
   <script>
     // Data
-    const STORAGE_KEY = 'treino-v4';
+    const STORAGE_KEY = 'treino-ciclo2-v1';
 
     let state = {
       view: 'home',
       cycle: {
-        name: "Retorno à Musculação",
-        duration: "4 semanas",
-        mainGoal: "Emagrecimento",
-        notes: "Cargas moderadas nas primeiras semanas. Evitar corrida e saltos.",
+        name: "Ciclo 2 - Progressão",
+        duration: "4-6 semanas",
+        mainGoal: "Emagrecimento + Hipertrofia",
+        notes: "Volume aumentado (4 séries principais). Técnicas de intensificação. Treinos ~60 min.",
         schedule: { mon: "A", tue: "B", wed: "rest", thu: "C", fri: "D", sat: "E", sun: "rest" }
       },
       workouts: {
-        A: { name: "Inferior (Posterior)", icon: "🦵", color: "pink", rest: 60, notes: "Foco em glúteos e isquiotibiais", exercises: [
-          { id: "a1", name: "Abdução de quadril", sets: "3x15-20", cat: "Ativação", load: "" },
-          { id: "a2", name: "Coice na polia baixa", sets: "3x15-20", cat: "Ativação", load: "" },
-          { id: "a3", name: "Mesa flexora", sets: "3x12-15", cat: "Principal", load: "" },
-          { id: "a4", name: "Stiff com halteres", sets: "3x10-12", cat: "Principal", load: "" },
-          { id: "a5", name: "Agachamento sumô Smith", sets: "3x12-15", cat: "Principal", load: "" },
-          { id: "a6", name: "Hip thrust", sets: "3x12-15", cat: "Principal", load: "" },
-          { id: "a7", name: "Panturrilha em pé", sets: "3x15-20", cat: "Acessório", load: "" },
-          { id: "a8", name: "Aeróbico", sets: "20-25 min", cat: "Cardio", load: "" }
+        A: { name: "Inferior (Posterior)", icon: "🦵", color: "pink", rest: 60, notes: "Foco glúteos + isquiotibiais. Drop set final.", exercises: [
+          { id: "a1", name: "Abdução de quadril", sets: "3x20", cat: "Ativação", load: "" },
+          { id: "a2", name: "Mesa flexora", sets: "4x10-12", cat: "Principal", load: "" },
+          { id: "a3", name: "Stiff com halteres", sets: "4x8-10", cat: "Principal", load: "" },
+          { id: "a4", name: "Step up no banco", sets: "3x12 cada", cat: "Unilateral", load: "" },
+          { id: "a5", name: "Hip thrust com barra", sets: "4x10-12", cat: "Principal", load: "" },
+          { id: "a6", name: "Leg press 90º (pés altos)", sets: "3x12-15", cat: "Finalizador", load: "" },
+          { id: "a7", name: "Panturrilha em pé", sets: "4x15-20", cat: "Acessório", load: "", drop: true },
+          { id: "a8", name: "Aeróbico", sets: "15 min", cat: "Cardio", load: "" }
         ]},
-        B: { name: "Superior (Empurrar)", icon: "💪", color: "blue", rest: 60, notes: "Peito + Ombros + Tríceps + Core", exercises: [
-          { id: "b1", name: "Supino reto halteres", sets: "3x10-12", cat: "Peito", load: "" },
-          { id: "b2", name: "Supino inclinado máquina", sets: "3x12-15", cat: "Peito", load: "" },
-          { id: "b3", name: "Desenvolvimento halteres", sets: "3x10-12", cat: "Ombros", load: "" },
-          { id: "b4", name: "Elevação lateral", sets: "3x12-15", cat: "Ombros", load: "" },
-          { id: "b5", name: "Tríceps polia", sets: "3x12-15", cat: "Tríceps", load: "" },
-          { id: "b6", name: "Tríceps francês", sets: "3x12-15", cat: "Tríceps", load: "" },
-          { id: "b7", name: "Prancha isométrica", sets: "3x40-60s", cat: "Core", load: "" },
-          { id: "b8", name: "Abdominal polia", sets: "3x15-20", cat: "Core", load: "" },
-          { id: "b9", name: "Russian twist", sets: "3x20", cat: "Core", load: "" },
-          { id: "b10", name: "Aeróbico", sets: "15 min", cat: "Cardio", load: "" }
+        B: { name: "Superior (Empurrar)", icon: "💪", color: "blue", rest: 60, notes: "Peito + Ombros + Tríceps + Core. HIIT final.", exercises: [
+          { id: "b1", name: "Supino reto halteres", sets: "4x8-10", cat: "Peito", load: "" },
+          { id: "b2", name: "Supino inclinado máquina", sets: "4x10-12", cat: "Peito", load: "" },
+          { id: "b3", name: "Flexão de braços", sets: "3x máx", cat: "Funcional", load: "" },
+          { id: "b4", name: "Desenvolvimento halteres", sets: "4x8-10", cat: "Ombros", load: "" },
+          { id: "b5", name: "Elevação lateral", sets: "4x12-15", cat: "Ombros", load: "", drop: true },
+          { id: "b6", name: "Tríceps polia", sets: "3x12-15", cat: "Tríceps", load: "" },
+          { id: "b7", name: "Mergulho no banco", sets: "3x10-12", cat: "Tríceps", load: "" },
+          { id: "b8", name: "Prancha toque ombros", sets: "3x10 cada", cat: "Core", load: "" },
+          { id: "b9", name: "Abdominal polia alta", sets: "4x15-20", cat: "Core", load: "" },
+          { id: "b10", name: "Russian twist peso", sets: "3x24", cat: "Core", load: "" },
+          { id: "b11", name: "HIIT bike", sets: "10 min", cat: "Cardio", load: "" }
         ]},
-        C: { name: "Inferior (Anterior)", icon: "🦿", color: "amber", rest: 60, notes: "⚠️ CUIDADO COM O JOELHO", exercises: [
-          { id: "c1", name: "Extensora", sets: "3x15-20", cat: "Ativação", load: "", warn: true },
-          { id: "c2", name: "Leg press 45°", sets: "3x12-15", cat: "Principal", load: "", warn: true },
-          { id: "c3", name: "Cadeira adutora", sets: "3x15-20", cat: "Estabilização", load: "" },
-          { id: "c4", name: "Cadeira abdutora", sets: "3x15-20", cat: "Glúteo médio", load: "" },
-          { id: "c5", name: "Afundo estático Smith", sets: "3x10-12", cat: "Principal", load: "", warn: true },
-          { id: "c6", name: "Panturrilha sentado", sets: "3x15-20", cat: "Acessório", load: "" },
-          { id: "c7", name: "Aeróbico", sets: "25 min", cat: "Cardio", load: "" }
+        C: { name: "Inferior (Anterior)", icon: "🦿", color: "amber", rest: 60, notes: "⚠️ Observar joelho. Drop set extensora final.", exercises: [
+          { id: "c1", name: "Extensora (ativação)", sets: "3x15-20", cat: "Ativação", load: "", warn: true },
+          { id: "c2", name: "Leg press 90º", sets: "4x10-12", cat: "Principal", load: "", warn: true },
+          { id: "c3", name: "Hack squat ou Smith", sets: "4x10-12", cat: "Principal", load: "", warn: true },
+          { id: "c4", name: "Cadeira adutora", sets: "4x15-20", cat: "Estabilização", load: "" },
+          { id: "c5", name: "Cadeira abdutora", sets: "4x15-20", cat: "Glúteo médio", load: "" },
+          { id: "c6", name: "Afundo estático halteres", sets: "4x10-12 cada", cat: "Unilateral", load: "" },
+          { id: "c7", name: "Extensora (finalizador)", sets: "3x15", cat: "Finalizador", load: "", drop: true },
+          { id: "c8", name: "Panturrilha sentado", sets: "4x15-20", cat: "Acessório", load: "" },
+          { id: "c9", name: "Aeróbico elíptico", sets: "15 min", cat: "Cardio", load: "" }
         ]},
-        D: { name: "Superior (Puxar)", icon: "🏋️", color: "green", rest: 60, notes: "Costas + Bíceps + Core", exercises: [
-          { id: "d1", name: "Pulldown frente", sets: "3x10-12", cat: "Costas", load: "" },
-          { id: "d2", name: "Remada sentada", sets: "3x12-15", cat: "Costas", load: "" },
-          { id: "d3", name: "Remada alta halteres", sets: "3x12-15", cat: "Trapézio", load: "" },
-          { id: "d4", name: "Rosca direta barra W", sets: "3x10-12", cat: "Bíceps", load: "" },
-          { id: "d5", name: "Rosca martelo", sets: "3x12-15", cat: "Bíceps", load: "" },
-          { id: "d6", name: "Face pull", sets: "3x15-20", cat: "Postura", load: "" },
-          { id: "d7", name: "Prancha lateral", sets: "3x30-45s", cat: "Core", load: "" },
-          { id: "d8", name: "Dead bug", sets: "3x12-15", cat: "Core", load: "" },
-          { id: "d9", name: "Elevação de pernas", sets: "3x12-15", cat: "Core", load: "" },
-          { id: "d10", name: "Aeróbico", sets: "15 min", cat: "Cardio", load: "" }
+        D: { name: "Superior (Puxar)", icon: "🏋️", color: "green", rest: 60, notes: "Costas + Bíceps + Core. HIIT final.", exercises: [
+          { id: "d1", name: "Barra fixa assistida", sets: "4x8-10", cat: "Costas", load: "" },
+          { id: "d2", name: "Pulldown pegada fechada", sets: "3x10-12", cat: "Costas", load: "" },
+          { id: "d3", name: "Remada curvada barra", sets: "4x10-12", cat: "Costas", load: "" },
+          { id: "d4", name: "Remada alta halteres", sets: "3x12-15", cat: "Trapézio", load: "" },
+          { id: "d5", name: "Rosca direta barra W", sets: "4x10-12", cat: "Bíceps", load: "" },
+          { id: "d6", name: "Rosca martelo", sets: "4x12-15", cat: "Bíceps", load: "" },
+          { id: "d7", name: "Fly invertido máquina", sets: "4x12-15", cat: "Deltoide post", load: "" },
+          { id: "d8", name: "Prancha lateral elevação", sets: "3x12 cada", cat: "Core", load: "" },
+          { id: "d9", name: "Elevação pernas suspensa", sets: "4x12-15", cat: "Core", load: "" },
+          { id: "d10", name: "Abdominal supra peso", sets: "3x15-20", cat: "Core", load: "" },
+          { id: "d11", name: "HIIT elíptico", sets: "10 min", cat: "Cardio", load: "" }
         ]},
-        E: { name: "Core + Aeróbico", icon: "🔥", color: "purple", rest: 45, notes: "TREINO OPCIONAL", exercises: [
-          { id: "e1", name: "Prancha isométrica", sets: "3x45-60s", cat: "Core", load: "" },
-          { id: "e2", name: "Prancha lateral elevação", sets: "3x12-15", cat: "Core", load: "" },
-          { id: "e3", name: "Abdominal infra polia", sets: "3x15-20", cat: "Core", load: "" },
-          { id: "e4", name: "Abdominal supra", sets: "3x15-20", cat: "Core", load: "" },
-          { id: "e5", name: "Oblíquos halteres", sets: "3x15", cat: "Core", load: "" },
-          { id: "e6", name: "Mountain climbers", sets: "3x20", cat: "Core", load: "" },
-          { id: "e7", name: "Bird dog", sets: "3x12", cat: "Core", load: "" },
-          { id: "e8", name: "Aeróbico longo", sets: "30-35 min", cat: "Cardio", load: "" }
+        E: { name: "Core + Aeróbico", icon: "🔥", color: "purple", rest: 30, notes: "Circuito core + HIIT longo", exercises: [
+          { id: "e1", name: "Prancha isométrica", sets: "3x60s", cat: "Core", load: "" },
+          { id: "e2", name: "Prancha lateral direita", sets: "3x45s", cat: "Core", load: "" },
+          { id: "e3", name: "Prancha lateral esquerda", sets: "3x45s", cat: "Core", load: "" },
+          { id: "e4", name: "Mountain climbers", sets: "3x30s", cat: "Core", load: "" },
+          { id: "e5", name: "Abdominal bicicleta", sets: "3x30s", cat: "Core", load: "" },
+          { id: "e6", name: "Bird dog", sets: "3x20", cat: "Core", load: "" },
+          { id: "e7", name: "HIIT longo", sets: "20 min", cat: "Cardio", load: "" }
         ]}
       },
       completed: {},
@@ -398,6 +401,7 @@
       let exHtml = '';
       w.exercises.forEach(ex => {
         const done = state.completed[`${todayKey}-${state.selected}-${ex.id}`];
+        const dropTag = ex.drop ? ' <span class="tag" style="background:#f59e0b;color:#fff">DROP</span>' : '';
         exHtml += `
           <div class="exercise ${done ? 'done' : ''}">
             <div class="flex items-start gap-3">
@@ -409,6 +413,7 @@
                 <div class="flex gap-2 mt-1 items-center">
                   <span class="text-indigo text-sm font-medium">${ex.sets}</span>
                   <span class="tag">${ex.cat}</span>
+                  ${dropTag}
                 </div>
                 <div class="text-slate text-xs mt-2" onclick="toggleLoad('${ex.id}')" style="cursor:pointer">
                   📝 ${ex.load || 'Anotar carga'}
